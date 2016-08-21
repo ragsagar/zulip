@@ -266,7 +266,7 @@ exports.content_typeahead_selected = function (item) {
         }
     } else if (this.completing === 'mention') {
         beginning = (beginning.substring(0, beginning.length - this.token.length-1)
-                + '@**' + item.full_name + '** ');
+                + '@**' + item.email + '** ');
         $(document).trigger('usermention_completed.zulip', {mentioned: item});
     }
 

@@ -842,18 +842,15 @@ class RealmFilterPattern(markdown.inlinepatterns.Pattern):
                         m.group("name"))
 
 class UserMentionPattern(markdown.inlinepatterns.Pattern):
-    def find_user_for_mention(self, name):
+    def find_user_for_mention(self, email):
         # type: (text_type) -> Tuple[bool, Dict[str, Any]]
         if db_data is None:
             return (False, None)
 
-        if mention.user_mention_matches_wildcard(name):
+        if mention.user_mention_matches_wildcard(email):
             return (True, None)
 
-        user = db_data['full_names'].get(name.lower(), None)
-        if user is None:
-            user = db_data['short_names'].get(name.lower(), None)
-
+        user = db_data['emails'].get(email.lower(), None)
         return (False, user)
 
     def handleMatch(self, m):
@@ -1145,9 +1142,8 @@ def do_convert(md, realm_domain=None, message=None):
         realm_users = get_active_user_dicts_in_realm(message.get_realm())
 
         db_data = {'realm_alert_words': alert_words.alert_words_in_realm(message.get_realm()),
-                   'full_names':        dict((user['full_name'].lower(), user) for user in realm_users),
-                   'short_names':       dict((user['short_name'].lower(), user) for user in realm_users),
-                   'emoji':             message.get_realm().get_emoji()}
+                   'emoji':             message.get_realm().get_emoji(),
+                   'emails': dict((user['email'], user) for user in realm_users)}
 
     try:
         # Spend at most 5 seconds rendering.

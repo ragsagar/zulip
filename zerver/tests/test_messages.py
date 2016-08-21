@@ -346,7 +346,7 @@ class StreamMessagesTest(AuthedTestCase):
         user_profile = get_user_profile_by_email("iago@zulip.com")
         self.subscribe_to_stream(user_profile.email, "Denmark")
         self.send_message("hamlet@zulip.com", "Denmark", Recipient.STREAM,
-                          content="test @**Iago** rules")
+                          content="test @**%s** rules" % (user_profile.email,))
         message = most_recent_message(user_profile)
         assert(UserMessage.objects.get(user_profile=user_profile, message=message).flags.mentioned.is_set)
 
